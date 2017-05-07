@@ -1,0 +1,137 @@
+GitHub 基本概念 
+Repository
+仓库的意思，即你的项目，你想在 GitHub 上开源一个项目，那就必须要新建一个Repository ，如果你开源的项目多了，你就拥有了多个Repositories 。
+Issue
+问题的意思，举个例子，就是你开源了一个项目，别人发现你的项目中有bug，或者哪些地方做的不够好，他就可以给你提个 Issue ，即问题，提的问题多了，也就是 Issues ，然后你看到了这些问题就可以去逐个修复，修复ok了就可以一个个的 Close 掉。
+Star
+这个好理解，就是给项目点赞，但是在 GitHub 上的点赞远比微博、知乎点赞难的多，如果你有一个项目获得100个star都算很不容易了！
+Fork
+这个不好翻译，如果实在要翻译我把他翻译成分叉，什么意思呢？你开源了一个项目，别人想在你这个项目的基础上做些改进，然后应用到自己的项目中，这个时候他就可以 Fork 你的项目，这个时候他的 GitHub 主页上就多了一个项目，只不过这个项目是基于你的项目基础（本质上是在原有项目的基础上新建了一个分支，分支的概念后面会在讲解Git的时候说到），他就可以随心所欲的去改进，但是丝毫不会影响原有项目的代码与结构。
+Pull Request
+发起请求，这个其实是基于 Fork 的，还是上面那个例子，如果别人在你基础上做了改进，后来觉得改进的很不错，应该要把这些改进让更多的人收益，于是就想把自己的改进合并到原有项目里，这个时候他就可以发起一个?Pull Request（简称PR） ，原有项目创建人就可以收到这个请求，这个时候他会仔细review你的代码，并且测试觉得OK了，就会接受你的PR，这个时候你做的改进原有项目就会拥有了。
+Watch
+这个也好理解就是观察，如果你 Watch 了某个项目，那么以后只要这个项目有任何更新，你都会第一时间收到关于这个项目的通知提醒。
+Gist
+有些时候你没有项目可以开源，只是单纯的想分享一些代码片段，那这个时候 Gist 就派上用场了！
+
+
+生成SSH key
+	SSH是一种网络协议，用于计算机之间的加密登录。目前是每一台 Linux 电脑的标准配置。而大多数 Git 服务器都会选择使用 SSH 公钥来进行授权，所以想要在 GitHub 提交代码的第一步就是要先添加 SSH key 配置。
+	在终端Git Bash 输入ssh如果出现提示证明本机已经安装 SSH 。
+ssh-keygen -t rsa
+	指定 rsa 算法生成密钥，接着连续三个回车键（不需要输入密码），然后就会生成两个文件id_rsa（密钥） 和 id_rsa.pub（公钥）。（Linux/Mac 系统 在~/.ssh下，win系统在/c/Documents and Settings/username/.ssh下，都是隐藏文件）
+cd ~/.ssh
+cat id_rsa.pub
+	把id_rsa.pub 的内容添加到 GitHub 上，这样你本地的id_rsa 密钥跟GitHub 上的 id_rsa.pub 公钥进行配对，授权成功才可以提交代码。
+ssh -T git@github.com
+	在 GitHub 上的设置页面添加id_rsa.pub 公钥文件里的内容。SSH key 添加成功之后，输入ssh -T git@github.com进行测试，如果出现提示证明添加成功了。
+
+Git 具体命令 
+mkdir test（创建文件夹test）
+cd test（切换到test目录）
+touch a.md（新建a.md文件）
+cat a.md（查看a.md文件）
+clear（清屏）
+
+1.git config --global user.name "stupidSquirrel"
+git config --global user.email "wwwsongshucom@163.com"
+	以上进行了全局配置，当然有些时候我们的某一个项目想要用特定的邮箱，这个时候只需切换到你的项目目录，以上代码把--global参数去除，再重新执行一遍就ok了。PS：我们在 GitHub 的每次提交理论上都会在主页的下面产生一条绿色小方块的记录，如果你确认你提交了，但是没有绿色方块显示，那肯定是你提交代码配置的邮箱跟你 GitHub上的邮箱不一致，GitHub上的邮箱可以到Setting -> Emails里查看。
+
+2.alias 
+	别名。
+	git config --global alias.co checkout（git checkout简化为git co）
+	git config --global alias.ci commit（git commit 简化为git ci）
+	git config --global alias.st status（git status 简化为git st）
+	git config --global alias.br branch（git branch 简化为git br）
+	git config --global alias.psm 'push origin master'（git push origin master 简化为git psm）
+	git config --global alias.plm 'pull origin master'（git pull origin master 简化为git plm）
+	git config --global alias.lg "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit –date=relative"（git log简化为git lg，并改变log形式）
+	git config --global core.editor "vim"（设置Editor使用vim ）
+	git config --global color.ui true（给Git开启输出着色）
+	git config --global core.quotepath false（设置显示中文文件名）
+	（注：默认这些配置都在~/.gitconfig文件下，输入git config -l命令查看）
+
+3.git init
+	代表初始化 git 仓库，执行git init初始化git仓库之后会默认生成一个主分支 master
+4.git status
+	查看状态
+5.git diff
+	diff命令算是很常用的，使用场景是我们经常在做代码改动，但是有的时候几天前的代码了，做了哪些改动都忘记了，在提交之前需要确认下，这个时候就可以用diff来查看你到底做了哪些改动。
+	直接输git diff只能比较当前文件和缓存区文件差异。什么是缓存区？就是你还没有执行git add的文件。
+	当然跟暂存区做比较之外，他还可以有其他用法，如比较两次 commit 之间的差异，比较两个分支之间的差异，比较缓存区和版本库之间的差异等，具体用法如下：
+	git diff <$id1> <$id2> # 比较两次提交之间的差异
+	git diff <branch1>..<branch2># 在两个分支之间比较
+	git diff --staged # 比较暂存区和版本库差异
+
+6.git add
+	把改动添加到一个「暂存区」，可以理解成是一个缓存区域，临时保存改动 
+7.git commit -m 'first commit'
+	commit是提交的意思，-m代表是提交信息
+8.git log
+	查看所有产生的commit记录（每一次commit都会产生一条log，这条log标记了提交人的姓名与邮箱，以便其他人方便的查看与联系提交人）
+9.git branch（查看本地分支列表）
+git branch -r（查看远程分支列表）
+git branch a
+	新建了一个名字叫 a 的分支，这时候分支 a 跟分支 master 是一模一样的内容
+10.git checkout a
+	将当前分支到分支a。
+	checkout一般用作切换分支使用 ，但checkout不只用作切换分支，也可以用来切换 tag、切换到某次 commit，如：
+	git checkout v1.0 
+	git checkout ffd9f2dd68f1eb21d36cee50dbdd504e95d9c8f7（后面的一长串是commit_id，是每次commit的SHA1值，可以根据 git log 看到）
+	checkout还有一个撤销的作用：假设我们在一个分支开发一个小功能，刚写完一半，这时候需求变了，而且是大变化，之前写的代码完全用不了了，好在你刚写，甚至都没有git add进暂存区，这个时候很简单的一个操作就直接把原文件还原：git checkout a.md（注：checkout命令只能撤销还没有 add 进暂存区的文件）
+git checkout -b a
+	新建一个a分支，并且自动切换到a分支
+11.git branch -d a
+	删除本地分支a
+git branch -D a
+	强制删除本地分支a
+
+12.git tag
+	查看历史 tag 记录
+git tag v1.0
+	在当前代码状态下新建一个v1.0的标签
+13.git merge
+	合并分支。例如将a分支代码合并到主分支master上后进行发布，需要先做两步，第一步是切换到 master 分支，如果你已经在了就不用切换了，第二步执行git merge a，意思就是把a分支的代码合并过来
+14.git push <远程主机名> <本地分支名>:<远程分支名>
+	例如git push origin master：refs/for/master ，即是将本地的master分支推送到远程主机origin上的对应master分支， origin 是远程主机名，第一个master是本地分支名，第二个master是远程分支名。
+git push origin master
+	origin指定了要push到哪个remote；master其实是一个“refspec”，正常的“refspec”的形式为”+<src>:<dst>”，冒号前表示local branch的名字，冒号后表示remote repository下branch的名字。注意，如果省略了<dst>，git就认为你想push到remote repository下和local branch相同名字的branch。
+git push origin
+	如果当前分支与远程分支存在追踪关系，则本地分支和远程分支都可以省略，将当前分支推送到origin主机的对应分支
+git push
+	如果当前分支只有一个远程分支，那么主机名都可以省略
+git push origin ：refs/for/master
+	如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支，等同于git push origin --delete master
+15.git pull origin master
+	把远程最新的代码更新到本地。一般我们在push之前都会先pull，这样不容易冲突。
+
+提交代码
+方法1：clone
+	在GitHub上创建的test项目后执行git clone git@github.com:user.name/test.git ，这样就把test项目clone到了本地。这个时候该项目本身就已经是一个git 仓库了，不需要执行 git init 进行初始化，而且甚至都已经关联好了远程仓库，我们只需要在这个 test 目录下任意修改或者添加文件，然后进行commit，之后就可以执行git push origin master进行代码提交，这种是最简单方便的一种方式。
+方法2：关联本地已有项目
+	如果我们本地已经有一个完整的git仓库，并且已经进行了很多次commit，这个时候第一种方法就不适合了。
+	假设我们本地有个test2的项目，我们需要的是在GitHub上建一个test的项目，然后把本地test2上的所有代码commit记录提交到GitHub上的test项目。第一步就是在GitHub上建一个test项目；第二步把本地 test2 项目与 GitHub 上的 test 项目进行关联，切换到 test2 目录，执行git remote add origin git@github.com:user.name/test.git（就是添加一个远程仓库，地址是git@github.com:user.name/test.git，而origin是给这个项目的远程仓库起的名字，名字可以随便取，只不过大家公认的只有一个远程仓库时名字就是origin，为什么要给远程仓库取名字？因为我们可能一个项目有多个远程仓库，比如GitHub一个、公司一个，这样的话提交到不同的远程仓库就需要指定不同的仓库名字了）
+	查看我们当前项目有哪些远程仓库可以执行如下命令git remote -v，接下来，我们本地的仓库就可以向远程仓库进行代码提交了：git push origin master（默认向 GitHub 上的 test 目录提交了代码，而这个代码是在 master 分支）
+
+16.git merge & git rebase
+	merge分支是合并的意思，我们在一个 featureA 分支开发完了一个功能，这个时候需要合并到主分支 master 上去，我们只需要进行如下操作： 
+	git checkout master
+	git merge featureA
+其实rebase命令也是合并的意思，上面的需求我们一样可以如下操作： 
+	git checkout master
+	git rebase featureA
+merge跟rebase的区别可以理解成有两个书架，你需要把两个书架的书整理到一起去，第一种做法是 merge ，比较粗鲁暴力，就直接腾出一块地方把另一个书架的书全部放进去，虽然暴力，但是这种做法你可以知道哪些书是来自另一个书架的；第二种做法就是 rebase ，他会把两个书架的书先进行比较，按照购书的时间来给他重新排序，然后重新放置好，这样做的好处就是合并之后的书架看起来很有逻辑，但是你很难清晰的知道哪些书来自哪个书架。只能说各有好处，不同的团队根据不同的需要以及不同的习惯来选择就好。
+
+解决冲突
+	冲突的地方由====分出了上下两个部分，上部分一个有HEAD的字样代表是我当前所在分支的代码，下半部分是另一个分支的代码。
+
+
+
+上传代码到github的步骤
+1、在github上创建项目
+2、使用git clone https://github.com/xxxxxxx/xxxxx.git克隆到本地
+3、编辑项目
+4、git add . （将改动添加到暂存区）
+5、git commit -m "提交说明"
+6、git push origin master 将本地更改推送到远程master分支。
+这样就完成了向远程仓库的推送。
